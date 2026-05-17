@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Nearest Hospital</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<style>
+#map { height: 80vh; width: 100%; margin-top: 20px; }
+body { font-family: Arial, sans-serif; text-align: center; }
+.info { font-size: 18px; margin: 10px; }
+</style>
+</head>
+<body>
+
+<h2>Nearest Hospital: {{ hospital_name }}</h2>
+<div class="info">Distance: {{ distance }} km | Travel Time: {{ travel_time }} hours</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+var userLat = parseFloat("{{ user_lat }}");
+var userLon = parseFloat("{{ user_lon }}");
+var hospLat = parseFloat("{{ hosp_lat }}");
+var hospLon = parseFloat("{{ hosp_lon }}");
+
+var map = L.map('map').setView([userLat,userLon], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom: 19
+}).addTo(map);
+
+var userMarker = L.marker([userLat,userLon]).addTo(map).bindPopup("You are here").openPopup();
+var hospMarker = L.marker([hospLat,hospLon]).addTo(map).bindPopup("Hospital: {{ hospital_name }}");
+
+var route = L.polyline([[userLat,userLon],[hospLat,hospLon]], {color:'blue'}).addTo(map);
+map.fitBounds(route.getBounds());
+</script>
+
+</body>
+</html>
