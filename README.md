@@ -68,7 +68,13 @@ Model Evaluation
 Prediction
        ↓
 Flask Web Dashboard
-📁 Project Structure
+```
+
+---
+
+## 📁 Project Structure
+
+```text
 Emergency-Vehicle-Road-Prediction/
 │
 ├── Dashboard/
@@ -87,48 +93,61 @@ Emergency-Vehicle-Road-Prediction/
 ├── requirements.txt
 ├── README.md
 └── .gitignore
-🤖 Machine Learning
+```
+
+---
+
+## 🤖 Machine Learning
 
 The project uses Machine Learning techniques to analyze road and traffic-related features and generate predictions.
 
-ML Pipeline
-Data preprocessing
-Feature selection
-Feature engineering
-Feature scaling
-Model training
-Model evaluation
-Prediction
-Model Evaluation
+**ML Pipeline**
+
+- Data preprocessing
+- Feature selection
+- Feature engineering
+- Feature scaling
+- Model training
+- Model evaluation
+- Prediction
+
+**Model Evaluation**
 
 The trained model can be evaluated using metrics such as:
 
-Accuracy
-Precision
-Recall
-F1-Score
-Confusion Matrix
-📊 Exploratory Data Analysis
+- Accuracy
+- Precision
+- Recall
+- F1-Score
+- Confusion Matrix
+
+---
+
+## 📊 Exploratory Data Analysis
 
 Exploratory Data Analysis was performed to understand the dataset and identify important patterns.
 
 The analysis includes:
 
-Traffic patterns
-Road conditions
-Feature distributions
-Relationships between variables
-Important features affecting predictions
+- Traffic patterns
+- Road conditions
+- Feature distributions
+- Relationships between variables
+- Important features affecting predictions
 
 Visualizations were created using Matplotlib and Seaborn.
 
-🌐 Flask Web Dashboard
+---
+
+## 🌐 Flask Web Dashboard
 
 The trained Machine Learning model is integrated with a Flask-based web application.
 
 Users can enter the required road and traffic information and receive a prediction through the web interface.
 
-Dashboard Flow
+**Dashboard Flow**
+
+```text
 User Input
     ↓
 Flask Application
@@ -140,67 +159,94 @@ Trained ML Model
 Prediction
     ↓
 Result Display
+```
 
+---
 
-🚀 Installation & Setup
-1. Clone the Repository
+## 🚀 Installation & Setup
+
+**1. Clone the Repository**
+```bash
 git clone https://github.com/NEETESHDHAKED/Emergency-Vehicle-Road-Prediction.git
-2. Navigate to the Project
+```
+
+**2. Navigate to the Project**
+```bash
 cd Emergency-Vehicle-Road-Prediction
-3. Create a Virtual Environment
+```
+
+**3. Create a Virtual Environment**
+```bash
 python -m venv venv
-4. Activate the Environment
+```
+
+**4. Activate the Environment**
+
 Windows
+```bash
 venv\Scripts\activate
+```
+
 Linux / macOS
+```bash
 source venv/bin/activate
-5. Install Dependencies
+```
+
+**5. Install Dependencies**
+```bash
 pip install -r requirements.txt
-6. Run the Application
+```
+
+**6. Run the Application**
+```bash
 python app.py
+```
 
 Then open the local Flask URL shown in your terminal.
 
+---
 
+## 📈 Results
 
-📈 Results
+The project evaluates the Machine Learning model based on its prediction performance, using standard classification metrics — Accuracy, Precision, Recall, and F1-Score.
 
-The project evaluates the Machine Learning model based on its prediction performance.
+---
 
-Evaluation Metrics
-Metric	Score
-Accuracy	
-Precision	
-Recall	
-F1-Score	
-💡Key Learning Outcomes
+## 💡 Key Learning Outcomes
 
 Through this project, I worked on:
 
-End-to-End Machine Learning workflow
-Data preprocessing
-Exploratory Data Analysis
-Feature engineering
-Feature scaling
-Machine Learning model training
-Model evaluation
-Flask-based ML deployment
-Connecting Machine Learning models with web applications
-Building a practical data-driven solution
-🔮 Future Improvements
-🚦 Real-Time Traffic API Integration
-🗺️ Google Maps API Integration
-📍 GPS-Based Live Routing
-🧠 Deep Learning Models
-☁️ Cloud Deployment
-📱 Mobile Application
-🚑 Real-Time Emergency Vehicle Tracking
-🔄 Live Traffic Data Integration
+- End-to-End Machine Learning workflow
+- Data preprocessing
+- Exploratory Data Analysis
+- Feature engineering
+- Feature scaling
+- Machine Learning model training
+- Model evaluation
+- Flask-based ML deployment
+- Connecting Machine Learning models with web applications
+- Building a practical data-driven solution
 
+---
 
-👨‍💻 Author
-Neetesh Kumar Dhaked
+## 🔮 Future Improvements
+
+- 🚦 Real-Time Traffic API Integration
+- 🗺️ Google Maps API Integration
+- 📍 GPS-Based Live Routing
+- 🧠 Deep Learning Models
+- ☁️ Cloud Deployment
+- 📱 Mobile Application
+- 🚑 Real-Time Emergency Vehicle Tracking
+- 🔄 Live Traffic Data Integration
+
+---
+
+## 👨‍💻 Author
+
+**Neetesh Kumar Dhaked**
 
 🎓 B.Tech IT Student — JECRC College, Jaipur
 📊 Aspiring Data Scientist
 
+🔗 [LinkedIn](https://www.linkedin.com/in/neeteshkumardhaked/) · 📧 [Email](mailto:neeteshkumardhaked.it27@gmail.com)
