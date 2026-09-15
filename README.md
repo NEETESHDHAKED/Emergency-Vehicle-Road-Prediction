@@ -140,6 +140,8 @@ Trained ML Model
 Prediction
     ↓
 Result Display
+
+
 🚀 Installation & Setup
 1. Clone the Repository
 git clone https://github.com/NEETESHDHAKED/Emergency-Vehicle-Road-Prediction.git
@@ -159,22 +161,19 @@ python app.py
 
 Then open the local Flask URL shown in your terminal.
 
-📸 Project Screenshots
 
-Add screenshots of the Flask dashboard here.
 
-![Emergency Vehicle Dashboard](path/to/dashboard-screenshot.png)
 📈 Results
 
 The project evaluates the Machine Learning model based on its prediction performance.
 
 Evaluation Metrics
 Metric	Score
-Accuracy	Add Result
-Precision	Add Result
-Recall	Add Result
-F1-Score	Add Result
-💡 Key Learning Outcomes
+Accuracy	
+Precision	
+Recall	
+F1-Score	
+💡Key Learning Outcomes
 
 Through this project, I worked on:
 
@@ -197,10 +196,11 @@ Building a practical data-driven solution
 📱 Mobile Application
 🚑 Real-Time Emergency Vehicle Tracking
 🔄 Live Traffic Data Integration
+
+
 👨‍💻 Author
 Neetesh Kumar Dhaked
 
 🎓 B.Tech IT Student — JECRC College, Jaipur
 📊 Aspiring Data Scientist
 
-<p> <a href="https://github.com/NEETESHDHAKED" target="_blank"> <img src="https://skillicons.dev/icons?i=github" alt="GitHub" width="45" /> </a> <a href="https://www.linkedin.com/in/neeteshkumardhaked/" target="_blank"> <img src="https://skillicons.dev/icons?i=linkedin" alt="LinkedIn" width="45" /> </a> </p>
