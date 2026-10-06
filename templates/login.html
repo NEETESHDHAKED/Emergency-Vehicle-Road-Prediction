@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hospital Locator</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#4facfe,#00f2fe);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0;
+}
+
+.form-box{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    width:350px;
+}
+
+label{
+    font-weight:bold;
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin:8px 0 15px 0;
+    border-radius:5px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    background:#4facfe;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#2f8cff;
+}
+
+.location-btn{
+    background:#28a745;
+}
+
+.location-btn:hover{
+    background:#1e7e34;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="form-box">
+
+<form action="/dashboard" method="post">
+
+<label>Enter Latitude</label>
+<input id="lat" name="lat" placeholder="Latitude">
+
+<label>Enter Longitude</label>
+<input id="lon" name="lon" placeholder="Longitude">
+
+<button type="button" class="location-btn" onclick="getLocation()">Use My Location</button>
+
+<br><br>
+
+<label>Select Time of Day</label>
+<select name="time">
+<option value="morning">Morning</option>
+<option value="afternoon">Afternoon</option>
+<option value="evening">Evening</option>
+<option value="night">Night</option>
+</select>
+
+<label>Select Weather</label>
+<select name="weather">
+<option value="clear">Clear</option>
+<option value="rain">Rain</option>
+<option value="fog">Fog</option>
+</select>
+
+<label>Traffic</label>
+<select name="traffic">
+<option value="low">Low</option>
+<option value="medium">Medium</option>
+<option value="high">High</option>
+</select>
+
+<button type="submit">Find Nearest Hospital</button>
+
+</form>
+
+</div>
+
+<script>
+
+function getLocation(){
+
+if(navigator.geolocation){
+
+navigator.geolocation.getCurrentPosition(function(position){
+
+document.getElementById("lat").value = position.coords.latitude;
+document.getElementById("lon").value = position.coords.longitude;
+
+});
+
+}else{
+
+alert("Geolocation not supported");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
