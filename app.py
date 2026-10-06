@@ -30,7 +30,6 @@ hospitals = [
     {"name": "AIIMS Hospital Delhi", "location": (28.6139, 77.2090)},
     {"name": "Apollo Hospital Chennai", "location": (13.0674, 80.2376)},
     {"name": "Fortis Hospital Bangalore", "location": (12.9345, 77.6113)},
-    hospitals = [
     {"name": "PGI Multispeciality Hospital Amritsar", "location": (31.7698, 74.9184)},
     {"name": "Global Multispeciality Hospital Kochi", "location": (9.9096, 76.1769)},
     {"name": "Fortis Medical Centre Dehradun", "location": (30.0882, 78.141)},
@@ -134,7 +133,6 @@ hospitals = [
     {"name": "Medanta Multispeciality Hospital Chandigarh 100", "location": (30.7812, 76.7969)},
 ]
    
-]
 
 def nearest_hospital(user_loc):
     nearest = hospitals[0]
