@@ -166,7 +166,7 @@ def save_user():
     conn.close()
     return redirect("/")
 
-@app.route("/dashboard", methods=["POST"])
+@app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     user_lat = float(request.form["lat"])
     user_lon = float(request.form["lon"])
