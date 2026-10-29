@@ -32,8 +32,44 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 var userMarker = L.marker([userLat,userLon]).addTo(map).bindPopup("You are here").openPopup();
 var hospMarker = L.marker([hospLat,hospLon]).addTo(map).bindPopup("Hospital: {{ hospital_name }}");
 
-var route = L.polyline([[userLat,userLon],[hospLat,hospLon]], {color:'blue'}).addTo(map);
-map.fitBounds(route.getBounds());
+async function drawRoadRoute() {
+    const url =
+        `https://router.project-osrm.org/route/v1/driving/` +
+        `${userLon},${userLat};${hospLon},${hospLat}` +
+        `?overview=full&geometries=geojson`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.code !== "Ok" || !data.routes.length) {
+            throw new Error("Route not found");
+        }
+
+        const bestRoute = data.routes[0];
+
+        const roadCoordinates =
+            bestRoute.geometry.coordinates.map(([lon, lat]) => [lat, lon]);
+
+        L.polyline(roadCoordinates, {
+            color: "blue",
+            weight: 6
+        }).addTo(map);
+
+        map.fitBounds(L.latLngBounds(roadCoordinates), {
+            padding: [30, 30]
+        });
+
+        console.log("Road distance:", (bestRoute.distance / 1000).toFixed(2), "km");
+        console.log("Estimated route time:", Math.round(bestRoute.duration / 60), "minutes");
+
+    } catch (error) {
+        console.error(error);
+        alert("Road route load nahi hua. Dobara try karo.");
+    }
+}
+
+drawRoadRoute();
 </script>
 
 </body>
