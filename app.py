@@ -1,9 +1,8 @@
-
 import requests
 from flask import Flask, render_template, request, redirect
 import sqlite3
 from geopy.distance import geodesic
-from model import predict_time
+from model import predict_time, TRAINED_MAX_KM
 
 app = Flask(__name__)
 
@@ -152,6 +151,17 @@ hospitals = [
 ]
 
 
+# Remove duplicate hospitals (same name + location)
+_seen = set()
+_unique = []
+for _h in hospitals:
+    _key = (_h["name"], _h["location"])
+    if _key not in _seen:
+        _seen.add(_key)
+        _unique.append(_h)
+hospitals = _unique
+
+
 # ---------------- HOSPITAL SELECTION ----------------
 
 def nearest_hospital(user_loc):
@@ -293,8 +303,10 @@ def dashboard():
             hosp_lon=hospital_lon,
             hospital_name=hospital["name"],
             distance=round(distance, 2),
-            travel_time=round(float(travel_time), 2),
-            road_duration=round(road_duration, 2)
+            travel_time=round(float(travel_time), 1),
+            road_duration=round(road_duration, 1),
+            long_trip=distance > TRAINED_MAX_KM,
+            trained_max_km=round(TRAINED_MAX_KM)
         )
 
     except requests.RequestException:
