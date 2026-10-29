@@ -7,12 +7,29 @@
 #map { height: 80vh; width: 100%; margin-top: 20px; }
 body { font-family: Arial, sans-serif; text-align: center; }
 .info { font-size: 18px; margin: 10px; }
+.cards { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin: 14px; }
+.card { background: #f4f7fb; border-radius: 10px; padding: 12px 22px; min-width: 150px; }
+.card b { display: block; font-size: 24px; color: #0b5ed7; }
+.card span { font-size: 13px; color: #555; }
+.warn { background: #fff3cd; color: #664d03; border-radius: 8px; padding: 10px 16px; margin: 10px auto; max-width: 720px; font-size: 14px; }
 </style>
 </head>
 <body>
 
 <h2>Nearest Hospital: {{ hospital_name }}</h2>
-<div class="info">Distance: {{ distance }} km | Travel Time: {{ travel_time }} hours</div>
+
+<div class="cards">
+  <div class="card"><b>{{ distance }} km</b><span>Road distance</span></div>
+  <div class="card"><b>{{ travel_time }} min</b><span>Predicted time (traffic + weather)</span></div>
+  <div class="card"><b>{{ road_duration }} min</b><span>Route time without traffic (OSRM)</span></div>
+</div>
+
+{% if long_trip %}
+<div class="warn">
+  Ye hospital {{ trained_max_km }} km se door hai. Prediction model city-traffic data par train hai,
+  isliye lambi doori ka estimate approximate hai &mdash; OSRM time bhi dekho.
+</div>
+{% endif %}
 
 <div id="map"></div>
 
