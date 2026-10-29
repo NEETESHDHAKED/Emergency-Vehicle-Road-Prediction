@@ -26,6 +26,8 @@ data = data[required_columns].dropna().copy()
 # Standardize category text
 for column in ["time_of_day", "weather", "traffic_level"]:
     data[column] = data[column].astype(str).str.strip().str.lower()
+    data["pace"] = data["travel_time"] / data["distance"]
+TRAINED_MAX_KM = float(data["distance"].max())
 
 # ---------------- ENCODE CATEGORIES ----------------
 
