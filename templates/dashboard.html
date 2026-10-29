@@ -24,12 +24,6 @@ body { font-family: Arial, sans-serif; text-align: center; }
   <div class="card"><b>{{ road_duration }} min</b><span>Route time without traffic (OSRM)</span></div>
 </div>
 
-{% if long_trip %}
-<div class="warn">
-  Ye hospital {{ trained_max_km }} km se door hai. Prediction model city-traffic data par train hai,
-  isliye lambi doori ka estimate approximate hai &mdash; OSRM time bhi dekho.
-</div>
-{% endif %}
 
 <div id="map"></div>
 
