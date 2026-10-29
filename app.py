@@ -1,20 +1,38 @@
+
+import requests
 from flask import Flask, render_template, request, redirect
 import sqlite3
-import os
 from geopy.distance import geodesic
 from model import predict_time
 
 app = Flask(__name__)
 
-# DB init
+OSRM_URL = "https://router.project-osrm.org/route/v1/driving"
+
+
+# ---------------- DATABASE ----------------
+
 def init_db():
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
-    cur.execute("CREATE TABLE IF NOT EXISTS users (name TEXT, email TEXT, password TEXT)")
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            name TEXT,
+            email TEXT,
+            password TEXT
+        )
+    """)
+
     conn.commit()
     conn.close()
 
+
 init_db()
+
+
+# ---------------- HOSPITAL DATA ----------------
+# Existing hospital list retained from your code.
 
 hospitals = [
     {"name":"PGI Multispeciality Hospital Amritsar","location":(31.7698,74.9184)},
@@ -132,57 +150,169 @@ hospitals = [
     {"name": "Bombay Medical Centre Pune 99", "location": (18.6084, 73.8413)},
     {"name": "Medanta Multispeciality Hospital Chandigarh 100", "location": (30.7812, 76.7969)},
 ]
-   
+
+
+# ---------------- HOSPITAL SELECTION ----------------
 
 def nearest_hospital(user_loc):
-    nearest = hospitals[0]
-    min_dist = geodesic(user_loc, hospitals[0]["location"]).km
-    for h in hospitals:
-        dist = geodesic(user_loc, h["location"]).km
+    nearest = None
+    min_dist = float("inf")
+
+    for hospital in hospitals:
+        dist = geodesic(
+            user_loc,
+            hospital["location"]
+        ).km
+
         if dist < min_dist:
             min_dist = dist
-            nearest = h
+            nearest = hospital
+
     return nearest, min_dist
+
+
+# ---------------- ROAD ROUTING ----------------
+
+def get_road_route(user_lat, user_lon, hosp_lat, hosp_lon):
+    url = (
+        f"{OSRM_URL}/"
+        f"{user_lon},{user_lat};{hosp_lon},{hosp_lat}"
+    )
+
+    response = requests.get(
+        url,
+        params={
+            "overview": "full",
+            "geometries": "geojson"
+        },
+        timeout=10
+    )
+
+    response.raise_for_status()
+    data = response.json()
+
+    if data.get("code") != "Ok" or not data.get("routes"):
+        raise ValueError("Road route not found")
+
+    route = data["routes"][0]
+
+    return {
+        "distance_km": route["distance"] / 1000,
+        "duration_min": route["duration"] / 60,
+        "coordinates": route["geometry"]["coordinates"]
+    }
+
+
+# ---------------- LOGIN ----------------
 
 @app.route("/")
 def login():
     return render_template("login.html")
 
+
+# ---------------- REGISTER ----------------
+
 @app.route("/register")
 def register():
     return render_template("register.html")
+
 
 @app.route("/save_user", methods=["POST"])
 def save_user():
     name = request.form["name"]
     email = request.form["email"]
     password = request.form["password"]
+
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
-    cur.execute("INSERT INTO users VALUES (?,?,?)", (name, email, password))
+
+    cur.execute(
+        "INSERT INTO users VALUES (?, ?, ?)",
+        (name, email, password)
+    )
+
     conn.commit()
     conn.close()
+
     return redirect("/")
+
+
+# ---------------- DASHBOARD ----------------
 
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
-    user_lat = float(request.form["lat"])
-    user_lon = float(request.form["lon"])
-    user_loc = (user_lat, user_lon)
-    hospital, distance = nearest_hospital(user_loc)
-    hospital_lat, hospital_lon = hospital["location"]
-    time_of_day = request.form["time"]
-    weather = request.form["weather"]
-    traffic = request.form["traffic"]
-    travel_time = predict_time(distance, time_of_day, weather, traffic)
-    return render_template(
-        "dashboard.html",
-        user_lat=user_lat, user_lon=user_lon,
-        hosp_lat=hospital_lat, hosp_lon=hospital_lon,
-        hospital_name=hospital["name"],
-        distance=round(distance, 2),
-        travel_time=round(travel_time, 2)
-    )
+    if request.method != "POST":
+        return redirect("/")
+
+    try:
+        user_lat = float(request.form["lat"])
+        user_lon = float(request.form["lon"])
+
+        if not (-90 <= user_lat <= 90):
+            return "Invalid latitude.", 400
+
+        if not (-180 <= user_lon <= 180):
+            return "Invalid longitude.", 400
+
+        user_loc = (user_lat, user_lon)
+
+        # Step 1: Select nearest hospital by straight-line distance
+        hospital, _ = nearest_hospital(user_loc)
+
+        hospital_lat, hospital_lon = hospital["location"]
+
+        # Step 2: Get actual road distance and driving duration
+        route = get_road_route(
+            user_lat,
+            user_lon,
+            hospital_lat,
+            hospital_lon
+        )
+
+        distance = route["distance_km"]
+        road_duration = route["duration_min"]
+
+        # Step 3: Get prediction inputs from the form
+        time_of_day = request.form["time"]
+        weather = request.form["weather"]
+        traffic = request.form["traffic"]
+
+        # Step 4: ML model receives road distance
+        travel_time = predict_time(
+            distance,
+            time_of_day,
+            weather,
+            traffic
+        )
+
+        return render_template(
+            "dashboard.html",
+            user_lat=user_lat,
+            user_lon=user_lon,
+            hosp_lat=hospital_lat,
+            hosp_lon=hospital_lon,
+            hospital_name=hospital["name"],
+            distance=round(distance, 2),
+            travel_time=round(float(travel_time), 2),
+            road_duration=round(road_duration, 2)
+        )
+
+    except requests.RequestException:
+        app.logger.exception("OSRM routing service failed")
+        return (
+            "Road routing service is unavailable. Please try again later.",
+            503
+        )
+
+    except (ValueError, KeyError, TypeError):
+        app.logger.exception("Invalid dashboard input or route data")
+        return (
+            "Invalid location, form input, or route data.",
+            400
+        )
+
+
+# ---------------- RUN APP ----------------
 
 if __name__ == "__main__":
     app.run()
