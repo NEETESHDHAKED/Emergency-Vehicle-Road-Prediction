@@ -1,4 +1,3 @@
-
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
@@ -26,7 +25,11 @@ data = data[required_columns].dropna().copy()
 # Standardize category text
 for column in ["time_of_day", "weather", "traffic_level"]:
     data[column] = data[column].astype(str).str.strip().str.lower()
-    data["pace"] = data["travel_time"] / data["distance"]
+
+# travel_time (minutes) = distance (km) x pace (min/km).
+# Pace sirf time/weather/traffic par depend karta hai, distance par nahi.
+# Isliye model pace seekhta hai, taaki 15 km se lambi trips bhi sahi scale hon.
+data["pace"] = data["travel_time"] / data["distance"]
 TRAINED_MAX_KM = float(data["distance"].max())
 
 # ---------------- ENCODE CATEGORIES ----------------
@@ -41,11 +44,9 @@ data["traffic_level"] = le_traffic.fit_transform(data["traffic_level"])
 
 # ---------------- TRAIN MODEL ----------------
 
-X = data[
-    ["distance", "time_of_day", "weather", "traffic_level"]
-]
+X = data[["time_of_day", "weather", "traffic_level"]]
 
-y = data["travel_time"]
+y = data["pace"]
 
 model = RandomForestRegressor(
     n_estimators=100,
@@ -58,6 +59,7 @@ model.fit(X, y)
 # ---------------- PREDICT TRAVEL TIME ----------------
 
 def predict_time(distance, time, weather, traffic):
+    """Return predicted travel time in MINUTES for a distance in km."""
     time = str(time).strip().lower()
     weather = str(weather).strip().lower()
     traffic = str(traffic).strip().lower()
@@ -74,23 +76,13 @@ def predict_time(distance, time, weather, traffic):
         ) from exc
 
     features = pd.DataFrame(
-        [[
-            float(distance),
-            encoded_time,
-            encoded_weather,
-            encoded_traffic
-        ]],
-        columns=[
-            "distance",
-            "time_of_day",
-            "weather",
-            "traffic_level"
-        ]
+        [[encoded_time, encoded_weather, encoded_traffic]],
+        columns=["time_of_day", "weather", "traffic_level"]
     )
 
-    prediction = model.predict(features)[0]
+    pace = float(model.predict(features)[0])  # minutes per km
 
-    return max(0.0, float(prediction))
+    return max(0.0, pace * float(distance))
 
 
 # ---------------- CHECK MODEL ----------------
@@ -104,4 +96,5 @@ if __name__ == "__main__":
     print("Accepted traffic values:", list(le_traffic.classes_))
 
     print("\nExample prediction:")
-    print(predict_time(5, "morning", "rain", "high"))
+    print(predict_time(5, "morning", "rain", "high"), "min")
+    print(predict_time(39.26, "morning", "clear", "low"), "min (39.26 km)")
